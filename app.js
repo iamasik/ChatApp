@@ -13,4 +13,7 @@ const cookieParser=require('cookie-parser')
 app.use(cookieParser())
 //__________Initial route_______
 
+const viewRoute=require('./Route/viewRoute')
+
+app.use('/',viewRoute.view)
 exports.app=app
