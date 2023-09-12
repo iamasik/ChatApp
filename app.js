@@ -14,6 +14,8 @@ app.use(cookieParser())
 //__________Initial route_______
 
 const viewRoute=require('./Route/viewRoute')
+const userRoute=require('./Route/userRoute')
 
 app.use('/',viewRoute.view)
+app.use('/Api/v1/User',userRoute.user)
 exports.app=app
