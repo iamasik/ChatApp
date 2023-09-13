@@ -1,5 +1,6 @@
 const mongoose=require('mongoose')
 const validator=require('validator')
+const bcrypt=require('bcrypt')
 
 const User= new mongoose.Schema({
     name:{
@@ -20,11 +21,14 @@ const User= new mongoose.Schema({
     dob:Date,
     username:{
         type:String,
-        require:[true,'Enter your username.'],
+        required:[true,'Enter your username.'],
         uniqe:true,
         validator:function(data){
             return data.length<=20
         }
+    },
+    image:{
+        type:String
     },
     gender:{
         type:String,
@@ -38,10 +42,14 @@ const User= new mongoose.Schema({
     },
     confirmpassword:{
         type:String,
-        require:true,
+        required:true,
         validator:function(data){
             return data==this.password
         }
+    },
+    is_online:{
+        type:String,
+        default:"0"
     },
     passwordChangeAt:Date
 },
@@ -50,6 +58,18 @@ const User= new mongoose.Schema({
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 })
+
+// password hasing and remove confirm password
+User.pre('save', async function(next){
+    this.password=await bcrypt.hash(this.password,12)
+    this.confirmpassword=undefined
+    next()
+})
+
+//Check is the login password correct
+User.methods.isPasswordCorrect=async function(candidatePassword,originalPassword){
+    return await bcrypt.compare(candidatePassword,originalPassword)
+}
 
 const users=mongoose.model('users',User)
 module.exports=users
