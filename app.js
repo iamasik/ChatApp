@@ -15,7 +15,19 @@ app.use(cookieParser())
 
 const viewRoute=require('./Route/viewRoute')
 const userRoute=require('./Route/userRoute')
+const errorControl=require('./Utils/errorControl')
+const isOperational=require('./Utils/OperationalError')
 
 app.use('/',viewRoute.view)
 app.use('/Api/v1/User',userRoute.user)
+
+app.all("*",(req,res,next)=>{
+
+    next( new isOperational(`Can't find ${req.originalUrl} this url.`,404))
+})
+
+
+//Error Handle
+app.use(errorControl)
+
 exports.app=app
