@@ -12,7 +12,8 @@ user.route('/updateUser/:id').patch(userControl.updateUser)
 user.route('/deleteUser/:id').delete(userControl.deleteUser)
 user.route('/viewinfos').get(userControl.userinfos)
 user.route('/viewUser/:id').get(userControl.user)
+// user.route('/logout').get(authControl.logOut) 
 
 
-user.route('/logout').get(authControl.logOut)
-exports.user=user
+// user.route('/logout').get(authControl.logOut)
+exports.user=user 

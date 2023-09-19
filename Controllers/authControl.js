@@ -23,27 +23,28 @@ exports.login=catchError(async function(req,res,next){
     //Token genrate
     const loginToken=token(user.id)
 
-    const cookieOption={expires: new Date(Date.now()+process.env.JWTExpiresIn*24*60*60*1000),httpOnly:true}
-    if(process.env.Mode='production') cookieOption.secure=true
-    res.cookie("JWT",loginToken,cookieOption)
+    // const cookieOption={expires: new Date(Date.now()+process.env.JWTExpiresIn*24*60*60*1000),httpOnly:true}
+    // if(process.env.Mode='production') cookieOption.secure=true
+    // res.cookie("JWT",loginToken,cookieOption)
 
     //Response
     res.status(200).json({  
         status:"success",
-        token:loginToken,
-        data:cookieOption 
+        token:loginToken
+        // data:cookieOption 
     })
-})
+}) 
 
 exports.isAuthenticate=catchError(async function(req,res,next){
     let token
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
         token=req.headers.authorization.split(" ")[1]
+        // token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDkyYWExNzQ2N2VmZDMxM2MyMWNhZCIsImlhdCI6MTY5NTEwMDgyMCwiZXhwIjoxNjk1MTg3MjIwfQ.vKmBTL9BYucrTRs0x7_GJuIPtdk-EC0wvITrzqdFQbu"
     } 
-    else if(req.cookie.JWT){
-        token=req.cookie.JWT
-    }
-
+    // else if(req.cookie.JWT){
+    //     token=req.cookie.JWT
+    // }
+ 
     if(!token){
          return next(new OperationalError('Please login.',401))
     }
@@ -51,11 +52,10 @@ exports.isAuthenticate=catchError(async function(req,res,next){
     const decode=await promisify(JWT.verify)(token,process.env.JWTSecret)
     const userData=await users.findById(decode.id)
     if(!userData){
-        console.log("Didn't find");
+        return next(new OperationalError("You are not valid user.",401))
     }
 
     req.userData=userData
-    console.log("ok");
     next()
 })
 
@@ -64,4 +64,4 @@ exports.logOut=(req,res)=>{
     const cookieOptions={expires:new Date(Date.now()+10*1000),httpOnly:true}
     res.cookie("JWT","Logged Out",cookieOptions)
     res.status(200).json({status:"success"})
-  }
+  } 

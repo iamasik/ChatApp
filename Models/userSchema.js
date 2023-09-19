@@ -1,6 +1,7 @@
 const mongoose=require('mongoose')
 const validator=require('validator')
-const bcrypt=require('bcrypt')
+// const bcrypt=require('bcrypt')
+const bcrypt=require('bcryptjs')
 
 const User= new mongoose.Schema({
     name:{
@@ -10,26 +11,26 @@ const User= new mongoose.Schema({
     email:{
         type:String,
         required:[true,"Enter your mail address."],
-        validator:[validator.isEmail,'Enter your right mail'],
-        uniqe:true
+        validate:[validator.isEmail,'Enter your right mail'],
+        unique:true
     },
     phone:{
         type:String,
         required:[true,'Enter your phone number.'],
-        uniqe:true
+        unique:true
     },
     dob:Date,
     username:{
         type:String,
         required:[true,'Enter your username.'],
-        uniqe:true,
-        validator:function(data){
+        unique:true,
+        validate:[function(data){
             return data.length<=20
-        }
+        },"Enter less then 20 char"]
     },
     image:{
         type:String
-    },
+    }, 
     gender:{
         type:String,
         enum:['male','female','others']
@@ -61,6 +62,7 @@ const User= new mongoose.Schema({
 
 // password hasing and remove confirm password
 User.pre('save', async function(next){
+    if(!this.isModified('password')) return next()
     this.password=await bcrypt.hash(this.password,12)
     this.confirmpassword=undefined
     next()
@@ -70,6 +72,11 @@ User.pre('save', async function(next){
 User.methods.isPasswordCorrect=async function(candidatePassword,originalPassword){
     return await bcrypt.compare(candidatePassword,originalPassword)
 }
+
+// User.methods.isPasswordCHnaged=async function(tokenTime){
+
+//     return false
+// }
 
 const users=mongoose.model('users',User)
 module.exports=users
