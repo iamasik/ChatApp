@@ -7,17 +7,19 @@ const developmentError=function(err,req,res){
             message:err.message,
             err,
             code:err.statusCode,
-            stak:err.stack
+            stak:err.stack 
 
-        })
+        }) 
     }else{
         res.status(err.statusCode).json({
+            err,
+            stak:err.stack,
             data:"something is wrong"
         })
     }
-
+ 
 }
-
+ 
 const productionError=function(err,req,res){
     if(err.isOperational){
         res.status(err.statusCode).json({
@@ -35,7 +37,7 @@ const productionError=function(err,req,res){
  
 } 
 
-
+ 
 module.exports=(err,req,res,next)=>{
     err.statusCode=err.statusCode || 500
     err.status= err.status || "error"

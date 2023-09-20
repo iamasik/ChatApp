@@ -10,13 +10,22 @@ app.use(morgan('dev'))
 const path=require('path')
 
 const cookieParser=require('cookie-parser')
-app.use(cookieParser())
-//__________Initial route_______
+app.use(cookieParser()) 
+//__________Initial route_______ 
 
 const viewRoute=require('./Route/viewRoute')
 const userRoute=require('./Route/userRoute')
 const errorControl=require('./Utils/errorControl')
 const isOperational=require('./Utils/OperationalError')
+ 
+
+
+//Use static files
+app.use(express.static(path.join(__dirname,"Public")))
+
+//Set view engine
+app.set('view engine','ejs')
+app.set('views','./Views')
 
 app.use('/',viewRoute.view)
 app.use('/Api/v1/User',userRoute.user)
