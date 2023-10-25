@@ -3,7 +3,7 @@ const express=require("express")
 const app=express()
 app.use(express.json())
 
-const morgan = require("morgan")
+const morgan = require("morgan") 
 app.use(morgan('dev'))
 
 // https://nodejs.org/api/path.html#path_path_resolve_paths
