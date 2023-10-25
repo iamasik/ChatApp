@@ -11,4 +11,4 @@ class OperationalError extends Error{
         Error.captureStackTrace(this,this.constructor)
     }
 } 
-module.exports=OperationalError
+module.exports=OperationalError 

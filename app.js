@@ -18,7 +18,7 @@ const userRoute=require('./Route/userRoute')
 const errorControl=require('./Utils/errorControl')
 const isOperational=require('./Utils/OperationalError')
  
-
+ 
 
 //Use static files
 app.use(express.static(path.join(__dirname,"Public")))

@@ -18,7 +18,7 @@ const User= new mongoose.Schema({
         type:String,
         required:[true,'Enter your phone number.'],
         unique:true
-    },
+    }, 
     dob:Date,
     username:{
         type:String,

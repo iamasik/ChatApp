@@ -10,7 +10,7 @@ const { promisify } = require("util");
 const token=(id)=>{
     return JWT.sign({id},process.env.JWTSecret,{expiresIn:process.env.JWTExpire})
 }
-
+ 
 exports.login=catchError(async function(req,res,next){
     console.log(req.body);
     const {username, password}=req.body

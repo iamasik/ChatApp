@@ -16,4 +16,4 @@ user.route('/viewUser/:id').get(userControl.user)
 
 
 // user.route('/logout').get(authControl.logOut)
-exports.user=user 
+exports.user=user  

@@ -27,7 +27,7 @@ const singupusers=async(singup)=>{
         },5000)
     }
 }
-
+ 
 const singinusers=async(singin)=>{
     try{
         const res=await axios({

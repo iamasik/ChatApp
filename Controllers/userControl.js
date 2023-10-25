@@ -8,7 +8,7 @@ exports.userinfos=catchError(async (req,res,next)=>{
         status:"success",
         data:usersInfo
     })
-})
+}) 
 exports.user=catchError(async (req,res,next)=>{
     const userInfo=await users.findById(req.params.id)
     res.status(200).json({
