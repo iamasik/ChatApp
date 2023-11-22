@@ -12,7 +12,7 @@ const developmentError=function(err,req,res){
         }) 
     }else{
         res.status(err.statusCode).json({
-            err,
+            err, 
             stak:err.stack,
             data:"something is wrong"
         })
