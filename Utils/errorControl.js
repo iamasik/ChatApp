@@ -22,12 +22,12 @@ const developmentError=function(err,req,res){
  
 const productionError=function(err,req,res){
     if(err.isOperational){
-        res.status(err.statusCode).json({
-            status:err.status,
-            message:err.message,
-            code:err.statusCode
-
-        })
+        res.status(200).render('404',{title:"Page not found"})
+        // res.status(err.statusCode).json({
+        //     status:err.status,
+        //     message:err.message,
+        //     code:err.statusCode
+        // })
     }else{
         res.status(500).json({
             err,

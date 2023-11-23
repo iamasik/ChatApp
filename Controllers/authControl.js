@@ -12,7 +12,6 @@ const token=(id)=>{
 }
  
 exports.login=catchError(async function(req,res,next){
-    console.log(req.body);
     const {username, password}=req.body
     if(!username || !password){
         return next(new OperationalError('Fillup emapty field',400))
@@ -23,10 +22,9 @@ exports.login=catchError(async function(req,res,next){
     }
     //Token genrate
     const loginToken=token(user.id)
-
     const cookieOption={expires: new Date(Date.now()+process.env.JWTExpiresIn*24*60*60*1000),httpOnly:true}
     if(process.env.Mode='production') cookieOption.secure=true
-    res.cookie("JWT",loginToken,cookieOption)
+    res.cookie('JWT',loginToken,cookieOption)
     //Response
     res.status(200).json({  
         status:"success",
@@ -34,18 +32,19 @@ exports.login=catchError(async function(req,res,next){
         data:cookieOption 
     })
 }) 
-
+ 
 exports.isAuthenticate=catchError(async function(req,res,next){
     let token
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
         token=req.headers.authorization.split(" ")[1]
     } 
-    else if(req.cookie.JWT){
-        token=req.cookie.JWT
+    else if(req.cookies.JWT){
+        token=req.cookies.JWT
     }
  
     if(!token){
-         return next(new OperationalError('Please login.',401))
+        //  return next(new OperationalError('Please login.',401))
+        res.redirect('/')
     }
 
     const decode=await promisify(JWT.verify)(token,process.env.JWTSecret)
@@ -59,8 +58,8 @@ exports.isAuthenticate=catchError(async function(req,res,next){
 })
 
 //Logout User
-exports.logOut=(req,res)=>{
+exports.logOut=catchError(async function(req,res){
     const cookieOptions={expires:new Date(Date.now()+10*1000),httpOnly:true}
     res.cookie("JWT","Logged Out",cookieOptions)
     res.status(200).json({status:"success"})
-  } 
+  })
