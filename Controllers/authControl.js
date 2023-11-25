@@ -4,8 +4,6 @@ const catchError=require('../Utils/catchError')
 const OperationalError=require(`${__dirname}/../Utils/OperationalError`)
 const { promisify } = require("util");
 
-
-
 // Genrate token
 const token=(id)=>{
     return JWT.sign({id},process.env.JWTSecret,{expiresIn:process.env.JWTExpire})
@@ -32,7 +30,7 @@ exports.login=catchError(async function(req,res,next){
         data:cookieOption 
     })
 }) 
- 
+
 exports.isAuthenticate=catchError(async function(req,res,next){
     let token
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
@@ -41,21 +39,44 @@ exports.isAuthenticate=catchError(async function(req,res,next){
     else if(req.cookies.JWT){
         token=req.cookies.JWT
     }
- 
+  
     if(!token){
-        //  return next(new OperationalError('Please login.',401))
         res.redirect('/')
     }
-
+ 
     const decode=await promisify(JWT.verify)(token,process.env.JWTSecret)
     const userData=await users.findById(decode.id)
     if(!userData){
         return next(new OperationalError("You are not valid user.",401))
     }
-
     req.userData=userData
     next()
 })
+
+
+exports.isLoggedIn = async (req, res, next) => {
+    try{
+      if(req.cookies.JWT){
+  
+        //Verify is the token is valid or not => To make it promisify we will use buildin package
+        const Decode = await promisify(JWT.verify)(req.cookies.JWT, process.env.JWTSecret);
+
+        console.log(Decode);
+        //Is the user exist?
+        const UserData = await users.findById(Decode.id);
+        
+        if (!UserData) {
+          return next();
+        }
+        else{
+            res.redirect('/dashBoard')
+        }
+      }
+    }catch(err){
+      return next();
+    }
+    next()
+  };
 
 //Logout User
 exports.logOut=catchError(async function(req,res){

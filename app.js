@@ -3,11 +3,17 @@ const express=require("express")
 const app=express()
 app.use(express.json())
 
+
+const dotenv=require('dotenv')
+dotenv.config({path:'./config.env'})
+
+
 const morgan = require("morgan") 
 app.use(morgan('dev'))
 
 const cookieParser=require('cookie-parser') 
 app.use(cookieParser());
+
 
 //Image handle
 const multer=require('multer')
