@@ -9,7 +9,7 @@ exports.userinfos=catchError(async (req,res,next)=>{
         data:usersInfo
     })
 }) 
-
+ 
 exports.user=catchError(async (req,res,next)=>{
     const userInfo=await users.findById(req.params.id)
     res.status(200).json({
@@ -17,6 +17,7 @@ exports.user=catchError(async (req,res,next)=>{
         data:userInfo
     })
 })
+
 
 exports.adduser=catchError(async (req,res,next)=>{
     const data={}
@@ -26,7 +27,9 @@ exports.adduser=catchError(async (req,res,next)=>{
     data.phone=req.body.phone
     data.dob=req.body.dob
     data.gender=req.body.gender
-    data.image='images/'+req.file.filename
+    if(req.file){
+        data.image='images/'+req.file.filename
+    }
     data.password=req.body.password
     data.confirmpassword=req.body.confirmpassword
     if(!(data.password==data.confirmpassword)){
@@ -41,7 +44,7 @@ exports.adduser=catchError(async (req,res,next)=>{
 
 
 exports.deleteUser=catchError(async (req,res,next)=>{
-    const deleteUser=await users.findByIdAndDelete(req.params.id)
+    const deleteUser=await users.findByIdAndDelete(req.userData.id)
     res.status(200).json({
         status:"success"
     })
@@ -49,7 +52,15 @@ exports.deleteUser=catchError(async (req,res,next)=>{
 
 
 exports.updateUser=catchError(async(req,res,next)=>{
-    const updatedInfo=await users.findByIdAndUpdate(req.params.id,req.body,{
+    const Update={}
+    Update.name=req.body.name
+    Update.email=req.body.email
+    Update.phone=req.body.phone
+    Update.gender=req.body.gender
+    if(req.file){
+        Update.image='images/'+req.file.filename
+    }
+    const updatedInfo=await users.findByIdAndUpdate(req.userData.id,Update,{
         new:true
     })
     res.status(200).json({

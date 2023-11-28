@@ -1,14 +1,18 @@
 <%- include('_header') %>
 
+<!-- ____________________________ -->
+<!-- <div class="Test">
+  Hello
+</div> -->
 
 <div class="container">
     <div class="row">
-        <div class="col-3">
+        <div class="col-xl-3 col-lg-2 col-md-1 col-sm-12 col-12">
             
         </div>
-        <div class="col-6">
+        <div class="col-xl-6 col-lg-8 col-md-10 col-sm-12 col-12">
             <div style="padding-top: 50px;">
-                <form id="singup" style="display: none;" method="post">
+                <form id="singup" style="display: none;" method="post" enctype="multipart/form-data">
                     <div class="text-center">
                         <p><b>Create a new account</b></p>
 
@@ -18,43 +22,46 @@
                     </div>
                     <div class="form-outline mb-1">
                         <label class="form-label" for="name">Full name:</label>
-                      <input type="text" name="name" required id="name" class="form-control" />
+                      <input type="text" name="name"  id="name" class="form-control" />
                     </div>
                     <div class="form-outline mb-1">
                         <label class="form-label" for="username">Username:</label>
-                      <input type="text" name="username" required id="username" class="form-control" />
+                      <input type="text" name="username"  id="username" class="form-control" />
                     </div>
 
                     <div class="form-outline mb-1">
                         <label class="form-label" for="email">Email address:</label>
-                      <input type="email" name="email" required id="email" class="form-control" />
+                      <input type="email" name="email"  id="email" class="form-control" />
                     </div>
 
                     <div class="form-outline mb-1">
                         <label class="form-label" for="phone">Phone number:</label>
-                        <input type="text" name="phone" required id="phone" class="form-control" />
+                        <input type="text" name="phone"  id="phone" class="form-control" />
                     </div>
                     <div class="form-outline mb-1">
                         <label class="form-label" for="dob">Date of birth:</label>
-                        <input type="date" name="dob" required id="dob" class="form-control" />
+                        <input type="date" name="dob"  id="dob" class="form-control" />
                     </div>
                     <div class="form-outline mb-1">
                         <label class="label-same" for="password">Gender:</label><br>
-                        <select name="role" id="gender" required>
+                        <select name="role" id="gender" >
                           <option value="male">Male</option>
                           <option value="female">Female</option>
                           <option value="others">Others</option>
                         </select>
                     </div>
-                  
+                    <div class="form-outline mb-1">
+                      <label for="image" class="form-label">Profile Picture:</label>
+                      <input class="form-control" type="file" id="image" name="image" accept="image/*">
+                    </div>
                     <div class="form-outline mb-1">
                       <label class="form-label" for="password">Password:</label>
-                      <input type="password" name="password" required id="password" class="form-control" />
+                      <input type="password" name="password"  id="password" class="form-control" />
                     </div>
 
                     <div class="form-outline mb-4">
                       <label class="form-label" for="confirmpassword">Confirm Password:</label>
-                      <input type="password" name="confirmpassword" required id="confirmpassword" class="form-control" />
+                      <input type="password" name="confirmpassword"  id="confirmpassword" class="form-control" />
                     </div>
                   
                     <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
@@ -72,8 +79,8 @@
                             
                       </div>
                     <div class="form-outline mb-4">
-                      <input type="text" name="username" required id="username2" class="form-control" />
-                      <label class="form-label" for="username">Username:</label>
+                      <input type="text" name="username" required id="usernameOrEmail" class="form-control" />
+                      <label class="form-label" for="username">Username or Email:</label>
                     </div>
                    
                     <div class="form-outline mb-4">
@@ -82,14 +89,14 @@
                     </div>
                   
                     <div class="row mb-4">
-                      <div class="col d-flex justify-content-center">
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 d-flex justify-content-left">
                         <div class="form-check">
                           <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
                           <label class="form-check-label" for="form2Example31"> Remember me </label>
                         </div>
                       </div>
 
-                      <div class="col">
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 ">
                         <a href="#!">Forgot password?</a>
                       </div>
                     </div>
@@ -101,15 +108,28 @@
                   </form>
             </div>
         </div>
-        <div class="col-3">
+        <div class="col-xl-3 col-lg-2 col-md-1 col-sm-12 col-12">
 
         </div>
     </div>
 </div>
 
+<!-- <script>
+  const socket=io()
+
+  // Received
+  socket.on('msg',function (data){
+    const data2=document.querySelector('.Test')
+    console.log(data.Data);
+    data2.innerHTML=data.Data
+  })
+  // Send
+  socket.emit('back',"I recived")
+</script> -->
 
 <script src="/js/Others.js"></script>
 <script src="/js/login.js"></script>
+<script src="/js/authhandle.js"></script>
 
 <%- include('_footer') %>
 

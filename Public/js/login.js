@@ -32,7 +32,7 @@ if(LoginUser){
     LoginUser.addEventListener('submit',e=>{
         e.preventDefault()
         const singin={}
-        singin.username=document.querySelector('#username2').value
+        singin.usernameOrEmail=document.querySelector('#usernameOrEmail').value
         singin.password=document.querySelector('#password2').value
         singinusers(singin)
     })

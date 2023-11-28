@@ -22,6 +22,6 @@ async function Connection() {
 }
 Connection()
 
-const Server=StartApp.app.listen(process.env.Port,()=>{
+const Server=StartApp.http.listen(process.env.Port,()=>{
     console.log("Server Started")
 }) 

@@ -29,7 +29,8 @@ const User= new mongoose.Schema({
         },"Enter less then 20 char"]
     },
     image:{
-        type:String
+        type:String,
+        default:'images/image.jpg'
     }, 
     gender:{
         type:String,

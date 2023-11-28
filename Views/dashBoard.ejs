@@ -1,10 +1,48 @@
 <%- include('_header') %>
 
 
-<h1>This is dash board</h1>
-<p class="logout" style="color: blue; text-decoration: underline; text-align: right; cursor: pointer;">Logout</p>
+<div class="container">
+    <div class="row" style="padding-top: 40px;">
+        <div class="col-xl-8 col-lg-8 col-md-7 col-sm-12 col-12">
+            <div class="openWindow" style="text-align: center; padding-top: 30px;">
+                <img src="/Chat.png" style="width: 40%; height: auto;" alt="">
+                <div style="padding-top: 30px;">
+                    <p style="font-size: 18px; font-weight: bold;">
+                        We are here to explore the world..
+                    </p >
+                    <p style="font-size: 16px;">Click contact list to start chating</p>
+                </div>
+            </div>
+            <div class="startChating hide">
+                <div class="msgArea" style="margin-bottom: 10px; border-radius: 10px; overflow: auto;">
+                
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <form class="form-inline" role="form">           
+                                <input type="text" class="form-control input-lg flex-fill" id="search-church" style="margin-right: 5px;" placeholder="Start typing...">
+                                <button type="button" class="btn btn-primary">Send</button>            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-md-5 col-sm-12 col-12">
+            <div class="ChatList" style="background-color: #f2f2f2;">
+                <p>Chat List</p>
+                <% for (let i = 0; i < Data.length; i++) { %>
+                    <ul>
+                        <li class="ChatNow">
+                            <img src="<%= Data[i].image %>" style="width: 40px; height: 40px; border-radius: 100px;" alt="">
+                            
+                            <%= Data[i].name %>
+                        </li>
+                    </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
 
-
+<script src="./js/chat.js"></script>
 <%- include('_footer') %>
-
-<script src="/js/logout.js"></script>

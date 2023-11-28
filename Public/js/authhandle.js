@@ -27,24 +27,32 @@ const singupusers=async(singup)=>{
         },5000)
     }
 }
- 
-
-
 
 const AddUsers=document.querySelector('#singup')
 if(AddUsers){
     AddUsers.addEventListener('submit',e=>{
         e.preventDefault()
-        const singup={}
-        singup.name=document.querySelector('#name').value
-        singup.username=document.querySelector('#username').value
-        singup.email=document.querySelector('#email').value
-        singup.phone=document.querySelector('#phone').value
-        singup.dob=document.querySelector('#dob').value
-        singup.gender=document.querySelector('#gender').value
-        singup.password=document.querySelector('#password').value
-        singup.confirmpassword=document.querySelector('#confirmpassword').value
-        singupusers(singup)
+        const formData= new FormData()
+        formData.append('name',document.querySelector('#name').value)
+        formData.append('username',document.querySelector('#username').value)
+        formData.append('email',document.querySelector('#email').value)
+        formData.append('phone',document.querySelector('#phone').value)
+        formData.append('dob',document.querySelector('#dob').value)
+        formData.append('gender',document.querySelector('#gender').value)
+        const ImageData=document.getElementById('image').files[0]
+        if(ImageData){
+            formData.append('image',ImageData)
+        }
+        formData.append('password',document.querySelector('#password').value)
+        formData.append('confirmpassword',document.querySelector('#confirmpassword').value)
+
+        // const formDataObject = {};
+        // formData.forEach((value, key) => {
+        //     formDataObject[key] = value;
+        // });
+        // console.log(formDataObject);
+
+        singupusers(formData)
     })
 }
 

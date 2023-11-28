@@ -3,18 +3,19 @@ const users=require('../Models/userSchema')
 const catchError=require('../Utils/catchError')
 const OperationalError=require(`${__dirname}/../Utils/OperationalError`)
 const { promisify } = require("util");
-
+  
 // Genrate token
 const token=(id)=>{
     return JWT.sign({id},process.env.JWTSecret,{expiresIn:process.env.JWTExpire})
 }
  
 exports.login=catchError(async function(req,res,next){
-    const {username, password}=req.body
-    if(!username || !password){
+    const {usernameOrEmail, password}=req.body
+    if(!usernameOrEmail || !password){
         return next(new OperationalError('Fillup emapty field',400))
     }
-    const user=await users.findOne({username}).select('+password')
+    const user=await users.findOne({$or: [{ email: usernameOrEmail }, { username: usernameOrEmail }]}).select('+password')
+    
     if(!user || !await user.isPasswordCorrect(password,user.password)){
         return next(new OperationalError('Enter correct email and password.',401))
     }
@@ -50,6 +51,8 @@ exports.isAuthenticate=catchError(async function(req,res,next){
         return next(new OperationalError("You are not valid user.",401))
     }
     req.userData=userData
+    const DOB = new Date(req.userData.dob);
+    req.userData.dobDate = DOB.toISOString().split('T')[0];
     next()
 })
 
