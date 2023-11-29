@@ -26,6 +26,7 @@ user.use(authControl.isAuthenticate)
 user.route('/updateUser').patch(upload.single('image'),userControl.updateUser)
 user.route('/deleteUser').delete(userControl.deleteUser)
 user.route('/viewinfos').get(userControl.userinfos)
+user.route('/SaveChat').post(userControl.SaveChat)
 user.route('/viewUser/:id').get(userControl.user)
 user.route('/logout').get(authControl.logOut) 
 

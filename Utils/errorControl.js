@@ -7,7 +7,7 @@ const developmentError=function(err,req,res){
             status:err.status,
             message:err.message,
             err,
-            code:err.statusCode,
+            code:err.statusCode, 
             stak:err.stack 
 
         }) 
@@ -22,12 +22,18 @@ const developmentError=function(err,req,res){
 
 const productionError=function(err,req,res){
     if(err.isOperational){
-        res.status(200).render('404',{title:"Page not found",ViewData:undefined})
-        // res.status(err.statusCode).json({
-        //     status:err.status,
-        //     message:err.message,
-        //     code:err.statusCode
-        // })
+        if(err.statusCode==404){
+            res.status(200).render('404',{title:"Page not found",ViewData:undefined})
+        }
+        else{
+            res.status(err.statusCode).json({
+                stak:err.stack ,
+                err,
+                status:err.status,
+                message:err.message,
+                code:err.statusCode
+            })
+        }
     }else{
         res.status(500).json({
             err,

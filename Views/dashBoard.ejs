@@ -15,13 +15,14 @@
             </div>
             <div class="startChating hide">
                 <div class="msgArea" style="margin-bottom: 10px; border-radius: 10px; overflow: auto;">
-                
+
+
                 </div>
                 <div class="row">
                     <div class="col-12">
                         <form class="form-inline" role="form">           
-                                <input type="text" class="form-control input-lg flex-fill" id="search-church" style="margin-right: 5px;" placeholder="Start typing...">
-                                <button type="button" class="btn btn-primary">Send</button>            
+                            <input type="text" class="form-control input-lg flex-fill" id="typeing" style="margin-right: 5px;" placeholder="Start typing...">
+                            <button type="submit" class="btn btn-primary">Send</button>            
                         </form>
                     </div>
                 </div>
@@ -30,19 +31,96 @@
         <div class="col-xl-4 col-lg-4 col-md-5 col-sm-12 col-12">
             <div class="ChatList" style="background-color: #f2f2f2;">
                 <p>Chat List</p>
-                <% for (let i = 0; i < Data.length; i++) { %>
-                    <ul>
-                        <li class="ChatNow">
-                            <img src="<%= Data[i].image %>" style="width: 40px; height: 40px; border-radius: 100px;" alt="">
-                            
-                            <%= Data[i].name %>
-                        </li>
-                    </ul>
-                <% } %>
+                    <ul class="List">
+                    <% for (let i = 0; i < Data.length; i++) { %>
+                            <li class="ChatNow" data-id="<%= Data[i].id %>">
+                                <img src="<%= Data[i].image %>" style="width: 40px; height: 40px; border-radius: 100px;" alt="">
+                                
+                                <%= Data[i].name %>
+                                <% if(Data[i].is_online==='1') { %>
+                                <i style="background-color: #ffffff; padding: 3px; border-radius: 100%; text-align: center; font-size: 10px !important; vertical-align: super; line-height: 10px !important; padding-top: 5px; padding-right: 4px;" class="fa-solid Data-<%=Data[i].id%> onlineStatus fa-circle"></i>
+                                <% } %>
+                                <% if(Data[i].is_online==='0') { %>
+                                    <i style="background-color: #ffffff; padding: 3px; border-radius: 100%; text-align: center; font-size: 10px !important; vertical-align: super; line-height: 10px !important; padding-top: 5px; padding-right: 4px;" class="fa-solid Data-<%=Data[i].id%> offlineStatus  fa-circle"></i>
+                                <% } %>
+                            </li>
+                        
+                    <% } %>
+                </ul>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    const socket=io('/chat',{
+        auth:{
+            token: '<%= ViewData.id %>'
+        }
+    })
+    var SenderId='<%= ViewData.id %>'
+    var ReceiverId=''
+    const AllList=document.querySelectorAll('.ChatNow')
+    AllList.forEach(e=>{
+        e.addEventListener('click',function(){
+            ReceiverId=e.getAttribute('data-id')
+        })
+    })
+    
+
+    const SendMsg=async(SubmitData)=>{
+    try{
+        const res=await axios({
+            method:'POST',
+            url:'http://127.0.0.1:2400/Api/v1/User/SaveChat',
+            data:SubmitData 
+        })
+        if (res.data.status=='success'){
+            socket.emit('SendMsg',{data:res.data.Data})
+            $(".msgArea").append(`<div class = "senderdiv"><p class = "senderMsg">${res.data.Data.messages}</p></div>`)
+        }
+    }catch(err){
+        console.log(err);
+    }}
+
+    const SubmitMsg=document.querySelector('.form-inline')
+    if(SubmitMsg){
+        SubmitMsg.addEventListener('submit',e=>{
+            e.preventDefault()
+            const SubmitData={}
+            SubmitData.SenderId=SenderId
+            SubmitData.ReceiverId=ReceiverId
+            SubmitData.messages=document.querySelector('#typeing').value
+            
+            //Clear
+            document.querySelector('#typeing').value=''
+            SendMsg(SubmitData);
+        })
+    }
+
+    socket.on('ReceiveMsg',function(msg){
+        console.log(msg);
+        if(ReceiverId==msg.Datas.SenderId && SenderId==msg.Datas.ReceiverId){
+        $(".msgArea").append(`<div class = "receiverdiv"><p class = "receiverMsg">${msg.Datas.messages}</p></div>`)
+        }
+    })
+    
+    socket.on('online', function(UserId){
+        const Active1=document.querySelector(`.Data-${UserId.id}`)
+        if(Active1){
+            Active1.classList.add('onlineStatus')
+            Active1.classList.remove('offlineStatus')
+        }
+    })
+    socket.on('offline', function(UserId){
+        const Active2=document.querySelector(`.Data-${UserId.id}`)
+        if(Active2){
+            Active2.classList.add('offlineStatus')
+            Active2.classList.remove('onlineStatus')
+        }
+    })
+ 
+</script>
 
 <script src="./js/chat.js"></script>
 <%- include('_footer') %>

@@ -6,7 +6,7 @@ const Chat= new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'users'
     }, 
-    receiverId:{
+    ReceiverId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'users'
     },
@@ -23,4 +23,6 @@ timestamps:true
     toObject: { virtuals: true }
 })
 
-exports.chatModel=mongoose.model('chats',Chat)
+const chats=mongoose.model('chats',Chat)
+
+module.exports=chats

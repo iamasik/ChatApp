@@ -1,6 +1,7 @@
 const catchError=require('../Utils/catchError')
 const users=require('../Models/userSchema')
 const OperationalError=require('../Utils/OperationalError')
+const chats=require('../Models/chatSchema')
 
 exports.userinfos=catchError(async (req,res,next)=>{
     const usersInfo=await users.find()
@@ -15,6 +16,14 @@ exports.user=catchError(async (req,res,next)=>{
     res.status(200).json({
         status:"success",
         data:userInfo
+    })
+})
+
+exports.SaveChat=catchError(async (req,res,next)=>{
+    const Data=await chats.create(req.body)
+    res.status(200).json({
+        status:"success",
+        Data
     })
 })
 

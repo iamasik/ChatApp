@@ -2,7 +2,7 @@ const JWT=require('jsonwebtoken')
 const users=require('../Models/userSchema')
 const catchError=require('../Utils/catchError')
 const OperationalError=require(`${__dirname}/../Utils/OperationalError`)
-const { promisify } = require("util");
+const { promisify } = require("util"); 
   
 // Genrate token
 const token=(id)=>{
@@ -10,12 +10,12 @@ const token=(id)=>{
 }
  
 exports.login=catchError(async function(req,res,next){
+    
     const {usernameOrEmail, password}=req.body
     if(!usernameOrEmail || !password){
         return next(new OperationalError('Fillup emapty field',400))
     }
     const user=await users.findOne({$or: [{ email: usernameOrEmail }, { username: usernameOrEmail }]}).select('+password')
-    
     if(!user || !await user.isPasswordCorrect(password,user.password)){
         return next(new OperationalError('Enter correct email and password.',401))
     }
@@ -64,7 +64,6 @@ exports.isLoggedIn = async (req, res, next) => {
         //Verify is the token is valid or not => To make it promisify we will use buildin package
         const Decode = await promisify(JWT.verify)(req.cookies.JWT, process.env.JWTSecret);
 
-        console.log(Decode);
         //Is the user exist?
         const UserData = await users.findById(Decode.id);
         
@@ -73,6 +72,7 @@ exports.isLoggedIn = async (req, res, next) => {
         }
         else{
             res.redirect('/dashBoard')
+            return;
         }
       }
     }catch(err){

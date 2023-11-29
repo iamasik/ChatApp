@@ -6,18 +6,12 @@ app.use(express.json())
 //Socket programming
 const http=require('http').Server(app) 
 const io=require('socket.io')(http)
-io.on('connection',function(user){
-    console.log('A user connected'); 
 
-    user.emit('msg',{Data:'Hi'})
-    user.on('back',function(Data){
-        console.log(Data);
-    })
+const chatcontrol=require('./Controllers/chatcontrol')
+const cns=io.of('/chat')
+exports.cns=cns
+cns.on('connection',chatcontrol.start)
 
-    user.on('disconnect',function(){
-        console.log('A user disconnected');
-    }) 
-})
 
 const dotenv=require('dotenv')
 dotenv.config({path:'./config.env'})
@@ -50,7 +44,7 @@ app.use('/Api/v1/User',userRoute.user)
 // Initial Error Control
 const errorControl=require('./Utils/errorControl')
 const isOperational=require('./Utils/OperationalError')
-const { log } = require("console")
+
 
 app.all("*",(req,res,next)=>{
     next( new isOperational(`Can't find ${req.originalUrl} this url.`,404))
