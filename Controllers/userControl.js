@@ -27,6 +27,13 @@ exports.SaveChat=catchError(async (req,res,next)=>{
     })
 })
 
+exports.DeleteChat=catchError(async (req,res,next)=>{
+    const Data=await chats.findByIdAndDelete(req.body.id)
+    res.status(200).json({
+        status:"success"
+    })
+})
+
 
 exports.adduser=catchError(async (req,res,next)=>{
     const data={}

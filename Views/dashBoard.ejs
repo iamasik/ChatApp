@@ -3,7 +3,7 @@
 
 <div class="container">
     <div class="row" style="padding-top: 40px;">
-        <div class="col-xl-8 col-lg-8 col-md-7 col-sm-12 col-12">
+        <div class="col-xl-8 col-lg-8 col-md-7 col-sm-12 col-12" style="padding-bottom: 20px;">
             <div class="openWindow" style="text-align: center; padding-top: 30px;">
                 <img src="/Chat.png" style="width: 40%; height: auto;" alt="">
                 <div style="padding-top: 30px;">
@@ -15,7 +15,6 @@
             </div>
             <div class="startChating hide">
                 <div class="msgArea" style="margin-bottom: 10px; border-radius: 10px; overflow: auto;">
-
 
                 </div>
                 <div class="row">
@@ -53,11 +52,63 @@
 </div>
 
 <script>
+
+    // Initilal socket setup
     const socket=io('/chat',{
         auth:{
             token: '<%= ViewData.id %>'
         }
     })
+    
+
+    
+    //Select Dynamic data
+    const DynaData=function(){
+        let Delete=[]
+        Delete=document.querySelectorAll('.senderdiv')
+        // console.log(Delete);
+        if(Delete){
+            Delete.forEach(e=>{
+                const iId=`${e.id}-id`;
+                e.addEventListener('mouseover',function(){
+                    const item=document.getElementById(iId)
+                    item.classList.remove('oppor')
+                })
+                e.addEventListener('mouseout',function(){
+                    document.getElementById(iId).classList.add('oppor')
+                })
+                const item=document.getElementById(iId)
+                if(item){
+                    item.addEventListener('click',async function(){
+                        const Data={}
+                        Data.id=iId.replace('-id','')
+                        try{
+                        const res=await axios({
+                            method:'delete',
+                            url:'http://127.0.0.1:2400/Api/v1/User/DeleteChat',
+                            data:Data
+                        })
+                        if (res.data.status=='success'){
+                            socket.emit('DeleteMsg',{data:Data.id})
+                            e.innerHTML=''
+                        }
+                        }catch(err){
+                            console.log(err);
+                        }
+                    })
+                }
+            })
+        }
+    }
+
+
+    //fix scroll
+    function Scroll(){
+        const ScrollDiv=document.querySelector('.msgArea')
+        ScrollDiv.scrollTop=ScrollDiv.scrollHeight
+    }
+
+    // sender and receiver ID
     var SenderId='<%= ViewData.id %>'
     var ReceiverId=''
     const AllList=document.querySelectorAll('.ChatNow')
@@ -67,7 +118,7 @@
         })
     })
     
-
+    // function Axios post message
     const SendMsg=async(SubmitData)=>{
     try{
         const res=await axios({
@@ -77,12 +128,15 @@
         })
         if (res.data.status=='success'){
             socket.emit('SendMsg',{data:res.data.Data})
-            $(".msgArea").append(`<div class = "senderdiv"><p class = "senderMsg">${res.data.Data.messages}</p></div>`)
+            $(".msgArea").append(`<div class = "senderdiv" id="${res.data.Data._id}"><i class="fa-solid fa-trash-can delete oppor" id="${res.data.Data._id}-id"></i> <p class = "senderMsg">${res.data.Data.messages}</p></div>`)
+            DynaData()
+            Scroll()
         }
     }catch(err){
         console.log(err);
     }}
 
+    // Read data from chat form
     const SubmitMsg=document.querySelector('.form-inline')
     if(SubmitMsg){
         SubmitMsg.addEventListener('submit',e=>{
@@ -98,13 +152,47 @@
         })
     }
 
+    //Recived emit msg from server
     socket.on('ReceiveMsg',function(msg){
-        console.log(msg);
         if(ReceiverId==msg.Datas.SenderId && SenderId==msg.Datas.ReceiverId){
-        $(".msgArea").append(`<div class = "receiverdiv"><p class = "receiverMsg">${msg.Datas.messages}</p></div>`)
+        $(".msgArea").append(`<div class = "receiverdiv" id="${msg.Datas._id}-rec"><p class = "receiverMsg">${msg.Datas.messages}</p></div>`)
+        DynaData()
+        Scroll()
         }
     })
+
+    //Window handle
+    const ChatNow=document.querySelectorAll('.ChatNow')
+    for (let i=0;  i<ChatNow.length; i++){
+        ChatNow[i].addEventListener('click',e=> {
+            document.querySelector('.openWindow').classList.add('hide')
+            const chatwindow=document.querySelector('.startChating')
+            chatwindow.classList.remove('hide')
+            document.querySelector('.msgArea').innerHTML=''
+            socket.emit('loadData',{SenderId:SenderId, ReceiverId:ReceiverId})
+        })
+    }
+    socket.on('ResLoadData',function(resData){
+            for(let i=0; i<resData.length; i++){
+            if(resData[i].SenderId==SenderId && resData[i].ReceiverId==ReceiverId){
+                //$(".msgArea").append(`<div class = "senderdiv"><p class = "senderMsg">${resData[i].messages}</p></div>`)
+                $(".msgArea").append(`<div class = "senderdiv" id="${resData[i]._id}"><i class="fa-solid fa-trash-can delete oppor" id="${resData[i]._id}-id"></i><p class = "senderMsg">${resData[i].messages}</p></div>`)
+                Scroll()
+            }else{
+                $(".msgArea").append(`<div class = "receiverdiv" id="${resData[i]._id}-rec"><p class = "receiverMsg">${resData[i].messages}</p></div>`)
+                Scroll()
+            }
+            
+            }
+            DynaData()
+        })
     
+
+    socket.on('BackDeleteMsg',function(value){
+        const id=`${value.data}-rec`
+        document.getElementById(id).innerHTML=''
+    })
+
     socket.on('online', function(UserId){
         const Active1=document.querySelector(`.Data-${UserId.id}`)
         if(Active1){
@@ -122,5 +210,6 @@
  
 </script>
 
+<!-- <script src="./js/"></script> -->
 <script src="./js/chat.js"></script>
 <%- include('_footer') %>

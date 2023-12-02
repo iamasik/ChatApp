@@ -118,7 +118,7 @@
     margin: 2px 0px;
   }
   .hide{
-    display: none;
+    display: none !important;
   }
   .onlineStatus{
     color: rgb(3, 158, 3);
@@ -130,16 +130,28 @@
   .receiverdiv{
     text-align: left;
   }
+  .receiverdiv i{
+    font-size: 16px !important;
+    line-height: 24px;
+    color: #888888;
+    cursor: pointer;
+  }
   .receiverMsg{
     background-color: #ffffff;
     color: #000000;
     padding: 10px;
     border-radius: 10px 10px 10px 0px;
     display: inline-block;
-    margin: 4px 5px 4px 15px;
+    margin: 4px 5px 4px 5px;
   }
   .senderdiv{
     text-align: right;
+  }
+  .senderdiv i{
+    font-size: 14px !important;
+    line-height: 12px;
+    color: #ff0000;
+    cursor: pointer;
   }
   .senderMsg{
     background-color: #ffffff;
@@ -147,5 +159,8 @@
     padding: 10px;
     border-radius: 10px 10px 0px 10px;
     display: inline-block;
-    margin: 4px 5px 4px 15px;
+    margin: 4px 5px 4px 5px;
+  }
+  .oppor{
+    opacity: 0 !important;
   }
